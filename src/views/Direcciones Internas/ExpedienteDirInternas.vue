@@ -36,8 +36,7 @@
           <div v-else-if="tabSeleccionada2 === 'provInicialPdf'">
             <h4>Documento Físico</h4>
             <div class="pdf-container">
-              <iframe v-if="documentoUrl" :src="documentoUrl" class="pdf-iframe" title="Documento Físico"></iframe>
-              <p v-else class="text-center mt-4">Cargando PDF…</p>
+              <PdfVisualizer :base64="documentoFisico" />
             </div>
           </div>
 
@@ -132,13 +131,14 @@
 
 <script>
 import ComponenteIzquierdo from '@/components/Reutilizable/ComponenteIzquierdo.vue'
+import PdfVisualizer from '@/components/Reutilizable/PdfVisualizer.vue'
 import Swal from 'sweetalert2'
 import Global from '@/Global'
 import axios from 'axios'
 
 export default {
   name: 'ExpedienteDirInternas',
-  components: { ComponenteIzquierdo },
+  components: { ComponenteIzquierdo, PdfVisualizer },
   props: {
     id: { type: [String, Number], required: true }, // idSicoda
     idDireccion: { type: [String, Number], default: null } // id de dirección
@@ -148,6 +148,7 @@ export default {
       tabSeleccionada2: 'informacion',
       noDenuncia: null,
       documentoUrl: '',
+      documentoFisico: '',
       // Documento firmado
       firmadoUrl: '',
       firmadoError: '',
@@ -203,9 +204,9 @@ export default {
           { headers: { Authorization: `Bearer ${token}` } }
         )
         if (resp.data?.documentoFisico) {
-          this.documentoUrl = 'data:application/pdf;base64,' + resp.data.documentoFisico
+          this.documentoFisico = resp.data.documentoFisico
         } else {
-          this.documentoUrl = ''
+          this.documentoFisico = ''
         }
         if (resp.data?.denu) this.noDenuncia = resp.data.denu
       } catch (error) {

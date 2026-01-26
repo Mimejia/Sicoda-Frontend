@@ -40,9 +40,7 @@
                     <div v-else-if="tabSeleccionada2 === 'provInicialPdf'">
                         <h4>Documento Físico</h4>
                         <div class="pdf-container">
-                            <iframe v-if="documentoUrl" :src="documentoUrl" class="pdf-iframe" title="Informe PDF">
-                            </iframe>
-                            <p v-else class="text-center mt-4">Cargando PDF…</p>
+                            <PdfVisualizer :base64="documentoFisico" />
                         </div>
                     </div>
                 </div>
@@ -82,13 +80,14 @@
 <script>
 import ComponenteIzquierdo from '@/components/Reutilizable/ComponenteIzquierdo.vue'
 import TablaDocumentosExpediente from '@/components/Reutilizable/TablaDocumentosExpediente.vue'
+import PdfVisualizer from '@/components/Reutilizable/PdfVisualizer.vue'
 import Swal from 'sweetalert2'
 import Global from '@/Global'
 import axios from 'axios'
 
 export default {
     name: 'ExpedienteAsesor',
-    components: { ComponenteIzquierdo, TablaDocumentosExpediente },
+    components: { ComponenteIzquierdo, TablaDocumentosExpediente, PdfVisualizer },
     props: { id: { type: String, required: true } },
     data() {
         return {
@@ -100,6 +99,7 @@ export default {
             otros: '',
             soloLectura: false,
             documentoUrl: '',
+            documentoFisico: '',
             listaTiposDocumento: [],
             tipoDocumentoId: null,
 
@@ -141,9 +141,9 @@ export default {
                 )
 
                 if (response.data.documentoFisico) {
-                    this.documentoUrl = 'data:application/pdf;base64,' + response.data.documentoFisico
+                    this.documentoFisico = response.data.documentoFisico
                 }
-
+                
                 if (Array.isArray(response.data.tipoCalificacion) && response.data.tipoCalificacion.length) {
                     this.tipoCalificacion = 1
                     // cast a números para que includes(15) funcione sólido

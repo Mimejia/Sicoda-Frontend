@@ -26,8 +26,7 @@
           <div v-else>
             <h6 class="mb-2">Documento Físico</h6>
             <div class="pdf-container">
-              <iframe v-if="documentoUrl" :src="documentoUrl" class="pdf-iframe"></iframe>
-              <p v-else class="text-center mt-4">Cargando PDF…</p>
+              <PdfVisualizer :base64="documentoFisico" />
             </div>
           </div>
         </div>
@@ -239,18 +238,20 @@
 
 <script>
 import ComponenteIzquierdo from '@/components/Reutilizable/ComponenteIzquierdo.vue'
+import PdfVisualizer from '@/components/Reutilizable/PdfVisualizer.vue'
 import Global from '@/Global'
 import axios from 'axios'
 
 export default {
   name: 'ExpedienteDirecciones',
-  components: { ComponenteIzquierdo },
+  components: { ComponenteIzquierdo, PdfVisualizer },
   data() {
     return {
       idSicoda: Number(this.$route.params.idSicoda),
       tabLeft: 'informacion',
       expedienteRaw: null,
       documentoUrl: '',
+      documentoFisico: '',
       // Modo
       modo: '',
       // Aprobar
@@ -319,7 +320,7 @@ export default {
         this.expedienteRaw = data || {}
         const tipoDenu = Number(data?.tipoDenu ?? 0)
         if (tipoDenu !== 4 && data?.documentoFisico) {
-          this.documentoUrl = 'data:application/pdf;base64,' + data.documentoFisico
+          this.documentoFisico = data.documentoFisico
         }
       } catch {
         this.$swal('Error', 'No se pudo cargar el expediente.', 'error')

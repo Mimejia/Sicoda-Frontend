@@ -889,7 +889,7 @@ export default {
         const token = localStorage.getItem('token'); const usuario = this.$store?.state?.userEmail
         await axios.post(`${Global.url}asesorDenuncias/documentos/${doc.idDocumento}/retornar`,
           { usuario, comentario }, { headers: { Authorization: `Bearer ${token}` } })
-        await this.hardReloadAfterSuccess('Retornado', 'El documento fue retornado con anotaciones (estado 4).')
+        await this.hardReloadAfterSuccess('Retornado', 'El documento fue retornado con anotaciones.')
       } catch (e) {
         const msg = e.response?.data || 'No se pudo retornar el documento.'
         if (e.response?.status === 401 || e.response?.status === 403) {

@@ -37,8 +37,7 @@
 
           <div v-if="tabSeleccionada === 'fisico'">
             <div class="pdf-container">
-              <iframe v-if="documentoUrl" :src="documentoUrl" class="pdf-iframe"></iframe>
-              <p v-else class="text-center mt-4">Cargando PDF…</p>
+              <PdfVisualizer :base64="documentoFisico" />
             </div>
           </div>
 
@@ -228,18 +227,20 @@ import Global from '@/Global'
 import Swal from 'sweetalert2'
 import ComponenteIzquierdo from '@/components/Reutilizable/ComponenteIzquierdo.vue'
 import TablaDocumentosExpediente from '@/components/Reutilizable/TablaDocumentosExpediente.vue'
+import PdfVisualizer from '@/components/Reutilizable/PdfVisualizer.vue'
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
 
 export default {
   name: 'ExpedienteOfiProcurador',
-  components: { ComponenteIzquierdo, TablaDocumentosExpediente, vSelect },
+  components: { ComponenteIzquierdo, TablaDocumentosExpediente, vSelect, PdfVisualizer },
   props: { id: { type: String, required: true } },
   data() {
     return {
       denuncia: null,
       tipoDenu: null,
       documentoUrl: '',
+      documentoFisico: '',
       informeUrl: '',
       tabSeleccionada: 'resumen',
       idEstatus: null,
@@ -299,6 +300,11 @@ export default {
       )
       this.denuncia = data
       this.tipoDenu = Number(data.tipoDenu)
+
+      if (data.documentoFisico) {
+        this.documentoFisico = data.documentoFisico
+      }
+      
       this.idEstatus = Number(data.idEstatus)
       if (this.tipoDenu !== 4 && data.documentoFisico) {
         this.documentoUrl = 'data:application/pdf;base64,' + data.documentoFisico

@@ -48,13 +48,7 @@
           <div v-if="tabSeleccionada === 'contacto'">
             <h4>Documento Físico</h4>
             <div class="pdf-container">
-              <iframe
-                v-if="documentoUrl"
-                :src="documentoUrl"
-                class="pdf-iframe"
-                title="Informe PDF"
-              ></iframe>
-              <p v-else class="text-center mt-4">Cargando PDF…</p>
+              <PdfVisualizer :base64="denuncia ? denuncia.documentoFisico : ''" />
             </div>
           </div>
 
@@ -108,10 +102,11 @@ import Swal from 'sweetalert2';
 
 import ComponenteIzquierdo from '@/components/Reutilizable/ComponenteIzquierdo.vue';
 import ComponenteDerecho from '@/components/Reutilizable/ComponenteDerecho.vue';
+import PdfVisualizer from '@/components/Reutilizable/PdfVisualizer.vue';
 
 export default {
   name: 'ExpedienteDenunciaOficial',
-  components: { ComponenteIzquierdo, ComponenteDerecho },
+  components: { ComponenteIzquierdo, ComponenteDerecho, PdfVisualizer },
   props: {
     id: { type: String, required: true }
   },
@@ -150,7 +145,6 @@ export default {
       this.tipoDenu  = Number(data.tipoDenu);
 
       if (this.tipoDenu !== 4 && data.documentoFisico) {
-        this.documentoUrl = 'data:application/pdf;base64,' + data.documentoFisico;
         this.tieneDocFisico = true;
       } else {
         this.tieneDocFisico = false;

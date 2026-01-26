@@ -37,17 +37,21 @@
         </div>
 
         <div class="d-flex justify-content-end mb-3">
-            <div class="custom-dropdown">
-                <button class="custom-dropdown-button">
-                    Nuevo Registro ▶
+            <div class="custom-dropdown" ref="dropdownRegistro">
+                <button class="custom-dropdown-button" @click="toggleMenuRegistro">
+                    <i class="fas fa-plus-circle me-2"></i> Nuevo Registro 
+                    <i class="fas ms-2 transition-icon" :class="mostrarMenuRegistro ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                 </button>
-                <ul class="custom-dropdown-menu">
-                    <li v-for="opt in opcionesTp" :key="opt.tp">
-                        <router-link class="dropdown-item" :to="{ name: 'RegistroDenuncia', query: { tp: opt.tp } }">
-                            {{ opt.label }}
-                        </router-link>
-                    </li>
-                </ul>
+                
+                <transition name="dropdown-fade">
+                    <ul class="custom-dropdown-menu" v-if="mostrarMenuRegistro">
+                        <li v-for="opt in opcionesTp" :key="opt.tp">
+                            <router-link class="dropdown-item" :to="{ name: 'RegistroDenuncia', query: { tp: opt.tp } }" @click="cerrarMenuRegistro">
+                                <i class="fas fa-angle-right me-2 text-muted"></i> {{ opt.label }}
+                            </router-link>
+                        </li>
+                    </ul>
+                </transition>
             </div>
         </div>
 
@@ -179,7 +183,9 @@ export default {
                 { tp: '1', label: 'Registro Usuarios Externos' },
                 { tp: '2', label: 'Registro Usuarios Internos' },
                 { tp: '3', label: 'Registro Inspección' }
-            ]
+            ],
+            // Control visual del menú "Nuevo Registro"
+            mostrarMenuRegistro: false
         };
     },
     watch: {
@@ -204,8 +210,26 @@ export default {
     },
     mounted() {
         this.cargarDenuncias();
+        document.addEventListener('click', this.handleClickOutside);
+    },
+    beforeUnmount() {
+        document.removeEventListener('click', this.handleClickOutside);
     },
     methods: {
+        toggleMenuRegistro(event) {
+            // Evita que el click se propague al document y cierre el menú inmediatamente
+            event.stopPropagation(); 
+            this.mostrarMenuRegistro = !this.mostrarMenuRegistro;
+        },
+        cerrarMenuRegistro() {
+            this.mostrarMenuRegistro = false;
+        },
+        handleClickOutside(event) {
+            const dropdown = this.$refs.dropdownRegistro;
+            if (dropdown && !dropdown.contains(event.target)) {
+                this.cerrarMenuRegistro();
+            }
+        },
         verDetalle(denuncia) {
             if (denuncia.denunciaSimilar && denuncia.denunciaSimilar.trim() !== '') {
                 this.$router.push({ path: `/similitudes/${denuncia.idSicoda}` });
@@ -427,47 +451,83 @@ export default {
 }
 
 .custom-dropdown-button {
-  background-color: #0BB783;  /* o el color que uses */
+  background: linear-gradient(135deg, #0BB783 0%, #099a6f 100%);
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
-  border-radius: 0.375rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(11, 183, 131, 0.2);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.custom-dropdown-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(11, 183, 131, 0.3);
+}
+
+.custom-dropdown-button:active {
+  transform: translateY(0);
 }
 
 .custom-dropdown-menu {
-  display: none;
+  /* display: block; controlado con v-if */
   position: absolute;
   right: 0;
-  margin-top: 0.25rem;
+  top: 100%;
+  margin-top: 0.5rem;
   background: white;
-  border: 1px solid #ddd;
-  border-radius: 0.25rem;
-  min-width: 10rem;
-  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 8px;
+  min-width: 14rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   z-index: 1000;
   list-style: none;
-  padding: 0.25rem 0;
+  padding: 0.5rem 0;
+  overflow: hidden;
 }
 
-.custom-dropdown-menu li + li {
-  margin-top: 0.25rem;
+.custom-dropdown-menu li {
+  margin: 0;
 }
 
-.custom-dropdown-menu a {
-  display: block;
-  padding: 0.5rem 1rem;
-  color: #333;
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  color: #4B5563;
   text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
 }
 
-.custom-dropdown-menu a:hover {
-  background: #f5f5f5;
+.dropdown-item:hover {
+  background-color: #F3F4F6;
+  color: #111827;
 }
 
-.custom-dropdown:hover .custom-dropdown-menu {
-  display: block;
+.dropdown-item i {
+  font-size: 0.8rem;
+}
+
+/* Animación de fade y slide */
+.dropdown-fade-enter-active,
+.dropdown-fade-leave-active {
+  transition: all 0.2s ease-out;
+}
+
+.dropdown-fade-enter-from,
+.dropdown-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.transition-icon {
+    transition: transform 0.2s ease;
 }
 
 </style>

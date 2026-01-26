@@ -87,7 +87,7 @@ export default {
       try {
         const token = localStorage.getItem('token')
         const { data } = await axios.get(
-          `${Global.url}procuradorDenuncias/documentos/${this.idDocumento}/historial`,
+          `${Global.url}procuradorDenuncias/documentos/${this.idDocumento}/historial2`,
           { headers: { Authorization: `Bearer ${token}` } }
         )
         this.versiones = (data?.data || []).map(x => ({
