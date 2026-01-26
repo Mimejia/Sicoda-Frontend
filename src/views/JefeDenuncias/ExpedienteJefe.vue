@@ -20,6 +20,12 @@
                             Documento Físico
                         </button>
                     </li>
+                    <li class="nav-item" v-if="noDenuncia">
+                        <button class="nav-link" :class="{ active: tabSeleccionada2 === 'historialArchivos' }"
+                            @click="tabSeleccionada2 = 'historialArchivos'">
+                            Historial Archivos
+                        </button>
+                    </li>
                 </ul>
 
                 <div class="tab-content p-3 border rounded bg-light">
@@ -37,6 +43,10 @@
                         </div>
                     </div>
 
+
+                    <div v-else-if="tabSeleccionada2 === 'historialArchivos'">
+                         <HistorialArchivosExpediente :noDenuncia="noDenuncia" />
+                    </div>
                     <div v-else-if="tabSeleccionada2 === 'provInicialPdf'">
                         <h4>Documento Físico</h4>
                         <div class="pdf-container">
@@ -81,13 +91,14 @@
 import ComponenteIzquierdo from '@/components/Reutilizable/ComponenteIzquierdo.vue'
 import TablaDocumentosExpediente from '@/components/Reutilizable/TablaDocumentosExpediente.vue'
 import PdfVisualizer from '@/components/Reutilizable/PdfVisualizer.vue'
+import HistorialArchivosExpediente from '@/components/Reutilizable/HistorialArchivosExpediente.vue'
 import Swal from 'sweetalert2'
 import Global from '@/Global'
 import axios from 'axios'
 
 export default {
     name: 'ExpedienteJ',
-    components: { ComponenteIzquierdo, TablaDocumentosExpediente, PdfVisualizer },
+    components: { ComponenteIzquierdo, TablaDocumentosExpediente, PdfVisualizer, HistorialArchivosExpediente },
     props: { id: { type: String, required: true } },
     data() {
         return {

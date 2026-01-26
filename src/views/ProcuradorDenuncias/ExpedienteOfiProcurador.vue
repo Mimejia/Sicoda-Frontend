@@ -28,6 +28,12 @@
               Informe
             </button>
           </li>
+          <li v-if="denuncia">
+            <button class="nav-link" :class="{ active: tabSeleccionada === 'historial' }"
+                    @click="tabSeleccionada = 'historial'">
+              Historial Archivos
+            </button>
+          </li>
         </ul>
 
         <div class="tab-content p-3 border rounded bg-light">
@@ -52,6 +58,10 @@
                   <i class="fas fa-up-right-from-square me-1"></i> Abrir
                 </a>
               </div>
+            </div>
+
+            <div v-if="tabSeleccionada === 'historial'">
+                 <HistorialArchivosExpediente :noDenuncia="denuncia?.noDenuncia" />
             </div>
         </div>
       </div>
@@ -228,12 +238,13 @@ import Swal from 'sweetalert2'
 import ComponenteIzquierdo from '@/components/Reutilizable/ComponenteIzquierdo.vue'
 import TablaDocumentosExpediente from '@/components/Reutilizable/TablaDocumentosExpediente.vue'
 import PdfVisualizer from '@/components/Reutilizable/PdfVisualizer.vue'
+import HistorialArchivosExpediente from '@/components/Reutilizable/HistorialArchivosExpediente.vue'
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
 
 export default {
   name: 'ExpedienteOfiProcurador',
-  components: { ComponenteIzquierdo, TablaDocumentosExpediente, vSelect, PdfVisualizer },
+  components: { ComponenteIzquierdo, TablaDocumentosExpediente, vSelect, PdfVisualizer, HistorialArchivosExpediente },
   props: { id: { type: String, required: true } },
   data() {
     return {

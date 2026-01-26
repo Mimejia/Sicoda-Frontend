@@ -18,16 +18,24 @@
               Documento Físico
             </button>
           </li>
+          <li class="nav-item">
+            <button class="nav-link" :class="{ active: tabLeft === 'historial' }" @click="tabLeft = 'historial'">
+              Historial Archivos
+            </button>
+          </li>
         </ul>
         <div class="tab-content p-3 border rounded bg-light">
           <div v-if="tabLeft === 'informacion'">
             <ComponenteIzquierdo :id="idSicoda" :soloLectura="true" />
           </div>
-          <div v-else>
+          <div v-else-if="tabLeft === 'pdf'">
             <h6 class="mb-2">Documento Físico</h6>
             <div class="pdf-container">
               <PdfVisualizer :base64="documentoFisico" />
             </div>
+          </div>
+          <div v-else-if="tabLeft === 'historial'">
+             <HistorialArchivosExpediente :noDenuncia="noDenunciaNormalizado" />
           </div>
         </div>
       </div>
@@ -239,12 +247,13 @@
 <script>
 import ComponenteIzquierdo from '@/components/Reutilizable/ComponenteIzquierdo.vue'
 import PdfVisualizer from '@/components/Reutilizable/PdfVisualizer.vue'
+import HistorialArchivosExpediente from '@/components/Reutilizable/HistorialArchivosExpediente.vue'
 import Global from '@/Global'
 import axios from 'axios'
 
 export default {
   name: 'ExpedienteDirecciones',
-  components: { ComponenteIzquierdo, PdfVisualizer },
+  components: { ComponenteIzquierdo, PdfVisualizer, HistorialArchivosExpediente },
   data() {
     return {
       idSicoda: Number(this.$route.params.idSicoda),

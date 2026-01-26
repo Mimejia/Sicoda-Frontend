@@ -26,6 +26,12 @@
               Documento Firmado
             </button>
           </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" :class="{ active: tabSeleccionada2 === 'historialArchivos' }"
+              @click="tabSeleccionada2 = 'historialArchivos'">
+              Historial Archivos
+            </button>
+          </li>
         </ul>
 
         <div class="tab-content p-3 border rounded bg-light">
@@ -54,6 +60,10 @@
                 <div v-else class="alert alert-info">{{ firmadoError || 'Sin documento firmado disponible.' }}</div>
               </template>
             </div>
+          </div>
+          
+          <div v-else-if="tabSeleccionada2 === 'historialArchivos'">
+             <HistorialArchivosExpediente :noDenuncia="noDenuncia" />
           </div>
         </div>
       </div>
@@ -132,13 +142,14 @@
 <script>
 import ComponenteIzquierdo from '@/components/Reutilizable/ComponenteIzquierdo.vue'
 import PdfVisualizer from '@/components/Reutilizable/PdfVisualizer.vue'
+import HistorialArchivosExpediente from '@/components/Reutilizable/HistorialArchivosExpediente.vue'
 import Swal from 'sweetalert2'
 import Global from '@/Global'
 import axios from 'axios'
 
 export default {
   name: 'ExpedienteDirInternas',
-  components: { ComponenteIzquierdo, PdfVisualizer },
+  components: { ComponenteIzquierdo, PdfVisualizer, HistorialArchivosExpediente },
   props: {
     id: { type: [String, Number], required: true }, // idSicoda
     idDireccion: { type: [String, Number], default: null } // id de dirección
