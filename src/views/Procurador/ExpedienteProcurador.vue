@@ -187,6 +187,27 @@ export default {
     await this.cargarTiposDocumento()
   },
   methods: {
+    onHasTipo2o3(val) {
+      this.hasBloqueoTipo = val
+    },
+    onDocsChange(docs) {
+      this.docsListado = docs
+    },
+    async cargarTiposDocumento() {
+      try {
+        const token = localStorage.getItem('token')
+        const { data } = await axios.get(
+          `${Global.url}procuradorDenuncias/tiposDocumento`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        this.listaTiposDocumento = data.map(t => ({
+          value: Number(t.id),
+          label: t.nombre
+        }))
+      } catch (e) {
+        console.error('Error cargando tipos de documento', e)
+      }
+    },
     cerrarModal() {
       this.mostrarModal = false
       this.tipoDocumentoId = null
@@ -199,9 +220,11 @@ export default {
       this.loading = true
       try {
         const token = localStorage.getItem('token')
-        await axios.post(`${Global.url}procuradorDenuncias/generar`, {
+        const usuario = this.$store.state.userEmail
+        await axios.post(`${Global.url}procuradorDenuncias/generarDocumento`, {
            idSicoda: this.id,
-           idTipoDocumento: this.tipoDocumentoId
+           idTipoDocumento: this.tipoDocumentoId,
+           usuario: usuario
         }, { headers: { Authorization: `Bearer ${token}` } })
 
         // 3) Cerrar modal y notificar

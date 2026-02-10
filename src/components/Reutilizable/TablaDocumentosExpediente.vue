@@ -663,7 +663,7 @@ export default {
         )
         if (!this.isAlive) return
         this.docs = (data?.data || []).map(d => ({ ...d }))
-        const hasTipo2o3 = Array.isArray(this.docs) && this.docs.some(d => [2, 3].includes(this.getTipoTransaccionId(d)))
+        const hasTipo2o3 = Array.isArray(this.docs) && this.docs.some(d => [2, 3].includes(this.getTipoTransaccionId(d)) && this.getEstadoId(d) !== 10)
         this.$emit('docs-change', this.docs)
         this.$emit('has-tipo2o3', hasTipo2o3)
       } catch (e) {
